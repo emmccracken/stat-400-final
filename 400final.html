@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Airplane Passenger Satisfaction</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="400final_files/libs/clipboard/clipboard.min.js"></script>
+<script src="400final_files/libs/quarto-html/quarto.js"></script>
+<script src="400final_files/libs/quarto-html/popper.min.js"></script>
+<script src="400final_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="400final_files/libs/quarto-html/anchor.min.js"></script>
+<link href="400final_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="400final_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="400final_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="400final_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="400final_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Airplane Passenger Satisfaction</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="exploratory-factor-analysis" class="level1">
+<h1>Exploratory Factor Analysis</h1>
+<p>First I imported the necessary libraries needed for exploratory factor analysis.</p>
+<div class="cell" data-warnings="false">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rmarkdown); <span class="fu">library</span>(knitr); <span class="fu">library</span>(moments); </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scatterplot3d); <span class="fu">library</span>(corrplot); <span class="fu">library</span>(pso)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych); <span class="fu">library</span>(GPArotation); <span class="fu">library</span>(lavaan);</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse); <span class="fu">library</span>(skimr); <span class="fu">library</span>(mosaicData); </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom); <span class="fu">library</span>(Stat2Data); <span class="fu">library</span>(lmtest)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load in the data set</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>csv <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"train.csv"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(csv)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  X     id Gender     Customer.Type Age  Type.of.Travel    Class
+1 0  70172   Male    Loyal Customer  13 Personal Travel Eco Plus
+2 1   5047   Male disloyal Customer  25 Business travel Business
+3 2 110028 Female    Loyal Customer  26 Business travel Business
+4 3  24026 Female    Loyal Customer  25 Business travel Business
+5 4 119299   Male    Loyal Customer  61 Business travel Business
+6 5 111157 Female    Loyal Customer  26 Personal Travel      Eco
+  Flight.Distance Inflight.wifi.service Departure.Arrival.time.convenient
+1             460                     3                                 4
+2             235                     3                                 2
+3            1142                     2                                 2
+4             562                     2                                 5
+5             214                     3                                 3
+6            1180                     3                                 4
+  Ease.of.Online.booking Gate.location Food.and.drink Online.boarding
+1                      3             1              5               3
+2                      3             3              1               3
+3                      2             2              5               5
+4                      5             5              2               2
+5                      3             3              4               5
+6                      2             1              1               2
+  Seat.comfort Inflight.entertainment On.board.service Leg.room.service
+1            5                      5                4                3
+2            1                      1                1                5
+3            5                      5                4                3
+4            2                      2                2                5
+5            5                      3                3                4
+6            1                      1                3                4
+  Baggage.handling Checkin.service Inflight.service Cleanliness
+1                4               4                5           5
+2                3               1                4           1
+3                4               4                4           5
+4                3               1                4           2
+5                4               3                3           3
+6                4               4                4           1
+  Departure.Delay.in.Minutes Arrival.Delay.in.Minutes            satisfaction
+1                         25                       18 neutral or dissatisfied
+2                          1                        6 neutral or dissatisfied
+3                          0                        0               satisfied
+4                         11                        9 neutral or dissatisfied
+5                          0                        0               satisfied
+6                          0                        0 neutral or dissatisfied</code></pre>
+</div>
+</div>
+<p>Then I loaded in the data set as a csv, and did the necessary data wrangling to complete the analysis- which included mutating the categorical variables into binary (0,1), and removing the identifier variables that weren’t usable in the analysis.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Change categorical variables into binary</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>csv <span class="ot">&lt;-</span> csv <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mutate</span>(<span class="at">Gender =</span> <span class="fu">if_else</span>(Gender <span class="sc">==</span> <span class="st">"Female"</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>csv <span class="ot">&lt;-</span> csv <span class="sc">%&gt;%</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mutate</span>(<span class="at">Customer.Type =</span> <span class="fu">if_else</span>(Customer.Type <span class="sc">==</span> <span class="st">"Loyal Customer"</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>csv <span class="ot">&lt;-</span> csv <span class="sc">%&gt;%</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">mutate</span>(<span class="at">Type.of.Travel =</span> <span class="fu">if_else</span>(Type.of.Travel <span class="sc">==</span> <span class="st">"Business travel"</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>csv <span class="ot">&lt;-</span> csv <span class="sc">%&gt;%</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="fu">mutate</span>(<span class="at">Class =</span> <span class="fu">if_else</span>(Class <span class="sc">==</span> <span class="st">"Business"</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>csv <span class="ot">&lt;-</span> csv <span class="sc">%&gt;%</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="fu">mutate</span>(<span class="at">satisfaction =</span> <span class="fu">if_else</span>(satisfaction <span class="sc">==</span> <span class="st">"satisfied"</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove unecessary dimensions</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>csv <span class="ot">&lt;-</span> csv <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(<span class="sc">-</span>X)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>csv <span class="ot">&lt;-</span> csv <span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(<span class="sc">-</span>id)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(csv)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Gender Customer.Type Age Type.of.Travel Class Flight.Distance
+1      0             1  13              0     0             460
+2      0             0  25              1     1             235
+3      1             1  26              1     1            1142
+4      1             1  25              1     1             562
+5      0             1  61              1     1             214
+6      1             1  26              0     0            1180
+  Inflight.wifi.service Departure.Arrival.time.convenient
+1                     3                                 4
+2                     3                                 2
+3                     2                                 2
+4                     2                                 5
+5                     3                                 3
+6                     3                                 4
+  Ease.of.Online.booking Gate.location Food.and.drink Online.boarding
+1                      3             1              5               3
+2                      3             3              1               3
+3                      2             2              5               5
+4                      5             5              2               2
+5                      3             3              4               5
+6                      2             1              1               2
+  Seat.comfort Inflight.entertainment On.board.service Leg.room.service
+1            5                      5                4                3
+2            1                      1                1                5
+3            5                      5                4                3
+4            2                      2                2                5
+5            5                      3                3                4
+6            1                      1                3                4
+  Baggage.handling Checkin.service Inflight.service Cleanliness
+1                4               4                5           5
+2                3               1                4           1
+3                4               4                4           5
+4                3               1                4           2
+5                4               3                3           3
+6                4               4                4           1
+  Departure.Delay.in.Minutes Arrival.Delay.in.Minutes satisfaction
+1                         25                       18            0
+2                          1                        6            0
+3                          0                        0            1
+4                         11                        9            0
+5                          0                        0            1
+6                          0                        0            0</code></pre>
+</div>
+</div>
+<p>Then I had to make a reordering of the columns in our dataset so they would line up with the structural equation model so they would be in the same order.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>  col_order1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Cleanliness"</span>,<span class="st">"Food.and.drink"</span>,<span class="st">"Seat.comfort"</span>, <span class="st">"Baggage.handling"</span>,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"Leg.room.service"</span>, <span class="st">"On.board.service"</span>, <span class="st">"Inflight.service"</span>, </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"Inflight.wifi.service"</span>, <span class="st">"Ease.of.Online.booking"</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"Gate.location"</span>, <span class="st">"Departure.Arrival.time.convenient"</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"Departure.Delay.in.Minutes"</span>, <span class="st">"Arrival.Delay.in.Minutes"</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"Flight.Distance"</span>, <span class="st">"Class"</span>, <span class="st">"Type.of.Travel"</span>,<span class="st">"Customer.Type"</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"satisfaction"</span>, <span class="st">"Age"</span> ,<span class="st">"Gender"</span>, <span class="st">"Checkin.service"</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"Online.boarding"</span>, <span class="st">"Inflight.entertainment"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Next I computed the correlation and covariance matrices to utilize in the factor rotation and structural equation model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get correlation matrix</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>R <span class="ot">&lt;-</span> <span class="fu">cor</span>(csv, <span class="at">use=</span> <span class="st">"pairwise.complete.obs"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(R)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                      Gender Customer.Type         Age Type.of.Travel
+Gender           1.000000000   -0.03173175 -0.00892781    0.006908875
+Customer.Type   -0.031731747    1.00000000  0.28167394   -0.308333221
+Age             -0.008927810    0.28167394  1.00000000    0.048524467
+Type.of.Travel   0.006908875   -0.30833322  0.04852447    1.000000000
+Class           -0.010634440    0.08560067  0.13893896    0.552124811
+Flight.Distance -0.005827556    0.22520037  0.09946084    0.267343607
+                      Class Flight.Distance Inflight.wifi.service
+Gender          -0.01063444    -0.005827556          -0.008974280
+Customer.Type    0.08560067     0.225200365           0.007542914
+Age              0.13893896     0.099460842           0.017859321
+Type.of.Travel   0.55212481     0.267343607           0.105085427
+Class            1.00000000     0.466896366           0.032884658
+Flight.Distance  0.46689637     1.000000000           0.007131199
+                Departure.Arrival.time.convenient Ease.of.Online.booking
+Gender                               -0.009141828            -0.00695069
+Customer.Type                         0.206868582             0.01950912
+Age                                   0.038125152             0.02484200
+Type.of.Travel                       -0.259762539             0.13351142
+Class                                -0.096870020             0.10743590
+Flight.Distance                      -0.020042916             0.06571657
+                Gate.location Food.and.drink Online.boarding Seat.comfort
+Gender          -0.0003327536   -0.005772192      0.04225954   0.02650225
+Customer.Type   -0.0060784715    0.059454427      0.18926194   0.15948372
+Age             -0.0013296573    0.023000477      0.20893930   0.16027674
+Type.of.Travel   0.0307002217    0.063438677      0.22480314   0.12439945
+Class            0.0045261487    0.087114039      0.33054897   0.23319927
+Flight.Distance  0.0047932325    0.056993531      0.21486909   0.15733252
+                Inflight.entertainment On.board.service Leg.room.service
+Gender                    -0.006117139     -0.008155883      -0.03179772
+Customer.Type              0.109929813      0.056560474       0.04786801
+Age                        0.076444487      0.057594475       0.04058276
+Type.of.Travel             0.148198721      0.056542891       0.13880310
+Class                      0.199050255      0.220675066       0.21343729
+Flight.Distance            0.128740325      0.109526421       0.13391560
+                Baggage.handling Checkin.service Inflight.service  Cleanliness
+Gender               -0.03739081     -0.01056294      -0.03941041 -0.006504908
+Customer.Type        -0.02472335      0.03217745      -0.02266980  0.083613019
+Age                  -0.04752931      0.03548238      -0.04942722  0.053610551
+Type.of.Travel        0.03132100     -0.01675101       0.02259856  0.079207258
+Class                 0.17103790      0.16250145       0.16616520  0.139459028
+Flight.Distance       0.06318413      0.07307177       0.05753980  0.093148597
+                Departure.Delay.in.Minutes Arrival.Delay.in.Minutes
+Gender                        -0.002934681            -0.0003957563
+Customer.Type                 -0.004035888            -0.0047474629
+Age                           -0.010152230            -0.0121468636
+Type.of.Travel                 0.005432025             0.0056832915
+Class                         -0.010451213            -0.0148757674
+Flight.Distance                0.002158011            -0.0024258113
+                satisfaction
+Gender           -0.01221127
+Customer.Type     0.18763817
+Age               0.13716730
+Type.of.Travel    0.44900045
+Class             0.50384846
+Flight.Distance   0.29877979</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">cov</span>(csv, <span class="at">use=</span><span class="st">"pairwise.complete.obs"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                      Gender Customer.Type           Age Type.of.Travel
+Gender           0.249946772   -0.00612999   -0.06746458     0.00159802
+Customer.Type   -0.006129990    0.14930834    1.64511328    -0.05512055
+Age             -0.067464581    1.64511328  228.46212764     0.33932752
+Type.of.Travel   0.001598020   -0.05512055    0.33932752     0.21404367
+Class           -0.002655763    0.01652228    1.04901580     0.12759667
+Flight.Distance -2.905156646   86.77016654 1499.05838373   123.33328835
+                        Class Flight.Distance Inflight.wifi.service
+Gender           -0.002655763       -2.905157          -0.005957522
+Customer.Type     0.016522284       86.770167           0.003870112
+Age               1.049015796     1499.058384           0.358438254
+Type.of.Travel    0.127596671      123.333288           0.064555908
+Class             0.249517930      232.557678           0.021811549
+Flight.Distance 232.557678167   994302.699066           9.442003797
+                Departure.Arrival.time.convenient Ease.of.Online.booking
+Gender                               -0.006970246           -0.004861245
+Customer.Type                         0.121906771            0.010545704
+Age                                   0.878840267            0.525278390
+Type.of.Travel                       -0.183281647            0.086410281
+Class                                -0.073795780            0.075075134
+Flight.Distance                     -30.479755849           91.670582320
+                Gate.location Food.and.drink Online.boarding Seat.comfort
+Gender          -0.0002125438   -0.003836751      0.02851178   0.01747753
+Customer.Type   -0.0030008098    0.030543954      0.09869180   0.08128904
+Age             -0.0256772716    0.462213882      4.26189755   3.19559118
+Type.of.Travel   0.0181465787    0.039021535      0.14035547   0.07591774
+Class            0.0028885623    0.057854622      0.22282425   0.15365676
+Flight.Distance  6.1064646619   75.558600034    289.14056874 206.94332618
+                Inflight.entertainment On.board.service Leg.room.service
+Gender                    -0.004076611     -0.005253275      -0.02091439
+Customer.Type              0.056621927      0.028157261       0.02433396
+Age                        1.540211649      1.121561935       0.80700109
+Type.of.Travel             0.091395072      0.033702688       0.08448425
+Class                      0.132538101      0.142016719       0.14026412
+Flight.Distance          171.120103914    140.706298113     175.67739197
+                Baggage.handling Checkin.service Inflight.service   Cleanliness
+Gender               -0.02207512    -0.006682436      -0.02316422  -0.004267653
+Customer.Type        -0.01128142     0.015733309      -0.01029847   0.042397483
+Age                  -0.84836546     0.678650539      -0.87832684   1.063362939
+Type.of.Travel        0.01711202    -0.009806605       0.01229178   0.048088399
+Class                 0.10089220     0.102715151       0.09758292   0.091415882
+Flight.Distance      74.40150095    92.200934662      67.45443110 121.887669134
+                Departure.Delay.in.Minutes Arrival.Delay.in.Minutes
+Gender                         -0.05609178             -0.007656795
+Customer.Type                  -0.05962051             -0.071001539
+Age                            -5.86655426             -7.104190694
+Type.of.Travel                  0.09607878              0.101732310
+Class                          -0.19958693             -0.287562599
+Flight.Distance                82.26736453            -93.621977289
+                 satisfaction
+Gender           -0.003025253
+Customer.Type     0.035928586
+Age               1.027388288
+Type.of.Travel    0.102937798
+Class             0.124717591
+Flight.Distance 147.634350274</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data[,col_order1]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>I then summed the eigen values in the correlation matrix to see how many factors would be needed according to Kaiser and Jolliffe’s criterion, and ended up with 10 factors in accordance with Jolliffe’s criterion to include values greater than 0.7.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check how many factors are needed</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">eigen</span>(R)<span class="sc">$</span>values <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="co"># Kaiser's = 7</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 7</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">eigen</span>(R)<span class="sc">$</span>values <span class="sc">&gt;</span> <span class="fl">0.7</span>) <span class="co"># Jolliffe's = 10</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 10</code></pre>
+</div>
+</div>
+<p>I then computed the loading matrix using orthogonal rotation, and did a correlation plot of the results.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Orthogonal Rotation</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">pca</span>(<span class="at">r =</span> R, <span class="at">nfactors =</span> <span class="dv">10</span>, <span class="at">rotate =</span> <span class="st">"varimax"</span>)<span class="sc">$</span>loadings[]</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>A</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                           RC1          RC3           RC5
+Gender                             0.003058316 -0.026532860 -0.0031436622
+Customer.Type                      0.083580111  0.006103332  0.1265389386
+Age                                0.049264679 -0.012084316  0.0752171170
+Type.of.Travel                     0.064289571  0.018053944  0.6619002627
+Class                              0.086946706  0.163744291  0.8246005088
+Flight.Distance                    0.050816126  0.035830640  0.7843484676
+Inflight.wifi.service              0.096421912  0.129556775 -0.0506109660
+Departure.Arrival.time.convenient -0.015959357  0.063109115 -0.1520806932
+Ease.of.Online.booking            -0.043237510  0.016612478  0.0667762402
+Gate.location                      0.009469682 -0.030125815  0.0601023410
+Food.and.drink                     0.858594920 -0.023370404 -0.0003943562
+Online.boarding                    0.288125436  0.025170897  0.2666412975
+Seat.comfort                       0.811685245  0.016932394  0.1611255766
+Inflight.entertainment             0.788587243  0.462987282  0.0802865352
+On.board.service                   0.089502651  0.770460380  0.0828249302
+Leg.room.service                   0.027486279  0.620455763  0.1638654866
+Baggage.handling                   0.052225942  0.815392890  0.0234499583
+Checkin.service                    0.100242260  0.199133650  0.0731475649
+Inflight.service                   0.055177122  0.832911307  0.0137407913
+Cleanliness                        0.887233395  0.047220492  0.0491667109
+Departure.Delay.in.Minutes        -0.014653458 -0.012216952 -0.0025261630
+Arrival.Delay.in.Minutes          -0.016425256 -0.016211117 -0.0065660275
+satisfaction                       0.259946236  0.300268946  0.5376752479
+                                           RC8           RC4           RC2
+Gender                             0.007476522 -0.0008333438 -0.0021199478
+Customer.Type                      0.056797860 -0.0010013049  0.0190847673
+Age                                0.028018202 -0.0060234327  0.0257143797
+Type.of.Travel                     0.163999279  0.0110444311 -0.0921328210
+Class                              0.062330215 -0.0045538754 -0.0140675053
+Flight.Distance                   -0.047720090  0.0056622017  0.0671470688
+Inflight.wifi.service              0.843982975 -0.0100979611  0.2823735753
+Departure.Arrival.time.convenient  0.214369720  0.0021075860  0.7397678230
+Ease.of.Online.booking             0.764666324 -0.0015897453  0.4746626285
+Gate.location                      0.130974495  0.0036065044  0.8639606715
+Food.and.drink                     0.040950621 -0.0202628331  0.0209152409
+Online.boarding                    0.712599057 -0.0064061952 -0.1624645036
+Seat.comfort                       0.099932889 -0.0119271396 -0.0208900563
+Inflight.entertainment             0.071800655 -0.0101398067 -0.0036587029
+On.board.service                   0.033606599 -0.0239649464 -0.0004753502
+Leg.room.service                   0.171033499  0.0415836556 -0.0758778282
+Baggage.handling                  -0.001922446  0.0079811673  0.0484029058
+Checkin.service                    0.033747102 -0.0068080358  0.0160203946
+Inflight.service                  -0.017613607 -0.0540099825  0.0530200800
+Cleanliness                        0.066642086  0.0039267118 -0.0081126993
+Departure.Delay.in.Minutes        -0.007982674  0.9906219969  0.0028986741
+Arrival.Delay.in.Minutes          -0.009548214  0.9906089878  0.0021221879
+satisfaction                       0.398427155 -0.0455922094 -0.1670770356
+                                            RC6         RC10          RC9
+Gender                            -0.0199061991 -0.004678996 -0.009242800
+Customer.Type                      0.8747188290  0.206895770 -0.025154300
+Age                                0.1487724406  0.952817144  0.005796359
+Type.of.Travel                    -0.5911400466  0.112440281 -0.100905510
+Class                             -0.0872728857  0.120463829  0.108965844
+Flight.Distance                    0.3281808872 -0.119394199 -0.026790011
+Inflight.wifi.service             -0.0422168137 -0.045044732 -0.060638890
+Departure.Arrival.time.convenient  0.3040969735 -0.013735554  0.144378868
+Ease.of.Online.booking            -0.0371122379 -0.034070018 -0.051729693
+Gate.location                     -0.1294839126  0.038155017 -0.078720672
+Food.and.drink                    -0.0108064447 -0.058093159 -0.029573835
+Online.boarding                    0.1311228749  0.159550090  0.213854481
+Seat.comfort                       0.0725293909  0.134799229  0.137734706
+Inflight.entertainment             0.0062342285  0.035080779 -0.099328703
+On.board.service                   0.0414671398  0.090536894  0.117741430
+Leg.room.service                   0.0328445628  0.036439942 -0.109975242
+Baggage.handling                  -0.0337057393 -0.070469341  0.109343045
+Checkin.service                    0.0042588049  0.005112027  0.929843907
+Inflight.service                  -0.0304236769 -0.065403548  0.104497578
+Cleanliness                        0.0143383513 -0.008915909  0.091467776
+Departure.Delay.in.Minutes        -0.0009192776 -0.003130949 -0.003689711
+Arrival.Delay.in.Minutes          -0.0029070176 -0.003768975 -0.005048479
+satisfaction                       0.0112155886  0.129450499  0.127517103
+                                           RC7
+Gender                             0.996570557
+Customer.Type                     -0.024837638
+Age                               -0.004900708
+Type.of.Travel                    -0.008113948
+Class                             -0.006154428
+Flight.Distance                    0.011152117
+Inflight.wifi.service             -0.019543195
+Departure.Arrival.time.convenient  0.002633004
+Ease.of.Online.booking            -0.015946962
+Gate.location                     -0.001862658
+Food.and.drink                    -0.022379531
+Online.boarding                    0.065707653
+Seat.comfort                       0.041590848
+Inflight.entertainment             0.003288733
+On.board.service                   0.040720255
+Leg.room.service                  -0.044055529
+Baggage.handling                  -0.015388119
+Checkin.service                   -0.011032406
+Inflight.service                  -0.015263915
+Cleanliness                       -0.011851257
+Departure.Delay.in.Minutes        -0.001770316
+Arrival.Delay.in.Minutes           0.000681655
+satisfaction                      -0.014080799</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(A)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="400final_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>To check if oblique factor rotation was necessary, I looked at the correlations between factors, and since none of them were above the common threshold of 0.3, it was not necessary and I stuck with orthogonal rotation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Checking if oblique factor rotation is necessary</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>A1 <span class="ot">&lt;-</span> <span class="fu">pca</span>(<span class="at">r =</span> R, <span class="at">nfactors =</span> <span class="dv">10</span>, <span class="at">rotate =</span> <span class="st">"oblimin"</span>)<span class="sc">$</span>Phi</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>A1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             TC1          TC3         TC2          TC4           TC5
+TC1   1.00000000  0.183191729  0.19827204 -0.029418933  0.1662498976
+TC3   0.18319173  1.000000000  0.12632697 -0.031082817  0.1228772527
+TC2   0.19827204  0.126326966  1.00000000 -0.016004600  0.1848211534
+TC4  -0.02941893 -0.031082817 -0.01600460  1.000000000 -0.0036298702
+TC5   0.16624990  0.122877253  0.18482115 -0.003629870  1.0000000000
+TC8  -0.09870967 -0.007174459  0.21864476  0.006478850 -0.1262481320
+TC6   0.01285553 -0.030285740 -0.03068927 -0.001982467 -0.0739771014
+TC10  0.13264914  0.015111158  0.13662196 -0.011658835  0.2302109504
+TC9   0.14251716  0.186188569  0.08960533 -0.022341558  0.0831202488
+TC7   0.01306088 -0.035664108  0.00751457 -0.002619123 -0.0005766681
+              TC8          TC6         TC10         TC9           TC7
+TC1  -0.098709668  0.012855532  0.132649139  0.14251716  0.0130608782
+TC3  -0.007174459 -0.030285740  0.015111158  0.18618857 -0.0356641084
+TC2   0.218644759 -0.030689266  0.136621963  0.08960533  0.0075145702
+TC4   0.006478850 -0.001982467 -0.011658835 -0.02234156 -0.0026191230
+TC5  -0.126248132 -0.073977101  0.230210950  0.08312025 -0.0005766681
+TC8   1.000000000  0.072451706 -0.094568697 -0.06023954 -0.0219646227
+TC6   0.072451706  1.000000000  0.082565779  0.05443257 -0.0086612260
+TC10 -0.094568697  0.082565779  1.000000000  0.07215729  0.0059056676
+TC9  -0.060239540  0.054432570  0.072157292  1.00000000  0.0129098344
+TC7  -0.021964623 -0.008661226  0.005905668  0.01290983  1.0000000000</code></pre>
+</div>
+</div>
+<p>Next I checked which of the 10 factors each dimension loaded onto to use to create a path diagram, and then named the factors in accordance with their loadings.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check which factors each dimension loads onto</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(((<span class="fu">abs</span>(A[<span class="dv">1</span>,]) <span class="sc">&gt;</span> <span class="fl">0.3</span>))) <span class="co"># Gender</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RC7 
+ 10 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(((<span class="fu">abs</span>(A[<span class="dv">2</span>,]) <span class="sc">&gt;</span> <span class="fl">0.3</span>))) <span class="co"># Customer Type</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RC6 
+  7 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(((<span class="fu">abs</span>(A[<span class="dv">3</span>,]) <span class="sc">&gt;</span> <span class="fl">0.3</span>))) <span class="co"># Age</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RC10 
+   8 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(((<span class="fu">abs</span>(A[<span class="dv">4</span>,]) <span class="sc">&gt;</span> <span class="fl">0.3</span>))) <span class="co"># Type of Travel</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RC5 RC6 
+  3   7 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(((<span class="fu">abs</span>(A[<span class="dv">5</span>,]) <span class="sc">&gt;</span> <span class="fl">0.3</span>))) <span class="co"># Class</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RC5 
+  3 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(((<span class="fu">abs</span>(A[<span class="dv">6</span>,]) <span class="sc">&gt;</span> <span class="fl">0.3</span>))) <span class="co"># Flight Distance</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RC5 RC6 
+  3   7 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(((<span class="fu">abs</span>(A[<span class="dv">7</span>,]) <span class="sc">&gt;</span> <span class="fl">0.3</span>))) <span class="co"># In-flight WiFi Service</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RC8 
+  4 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(((<span class="fu">abs</span>(A[<span class="dv">8</span>,]) <span class="sc">&gt;</span> <span class="fl">0.3</span>))) <span class="co"># Departure/Arrival Time Convenience</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RC2 RC6 
+  6   7 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(((<span class="fu">abs</span>(A[<span class="dv">9</span>,]) <span class="sc">&gt;</span> <span class="fl">0.3</span>))) <span class="co"># Ease of Online Booking</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RC8 RC2 
+  4   6 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(((<span class="fu">abs</span>(A[<span class="dv">10</span>,]) <span class="sc">&gt;</span> <span class="fl">0.3</span>))) <span class="co"># Gate Location</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RC2 
+  6 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(((<span class="fu">abs</span>(A[<span class="dv">11</span>,]) <span class="sc">&gt;</span> <span class="fl">0.3</span>))) <span class="co"># Food and Drink</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RC1 
+  1 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(((<span class="fu">abs</span>(A[<span class="dv">12</span>,]) <span class="sc">&gt;</span> <span class="fl">0.3</span>))) <span class="co"># Online Boarding</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RC8 
+  4 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(((<span class="fu">abs</span>(A[<span class="dv">13</span>,]) <span class="sc">&gt;</span> <span class="fl">0.3</span>))) <span class="co"># Seat Comfort</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RC1 
+  1 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(((<span class="fu">abs</span>(A[<span class="dv">14</span>,]) <span class="sc">&gt;</span> <span class="fl">0.3</span>))) <span class="co"># In-flight Entertainment</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RC1 RC3 
+  1   2 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(((<span class="fu">abs</span>(A[<span class="dv">15</span>,]) <span class="sc">&gt;</span> <span class="fl">0.3</span>))) <span class="co"># On Board Service</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RC3 
+  2 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(((<span class="fu">abs</span>(A[<span class="dv">16</span>,]) <span class="sc">&gt;</span> <span class="fl">0.3</span>))) <span class="co"># Leg Room Service</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RC3 
+  2 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(((<span class="fu">abs</span>(A[<span class="dv">17</span>,]) <span class="sc">&gt;</span> <span class="fl">0.3</span>))) <span class="co"># Baggage Handling</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RC3 
+  2 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(((<span class="fu">abs</span>(A[<span class="dv">18</span>,]) <span class="sc">&gt;</span> <span class="fl">0.3</span>))) <span class="co"># Check-in Service</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RC9 
+  9 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(((<span class="fu">abs</span>(A[<span class="dv">19</span>,]) <span class="sc">&gt;</span> <span class="fl">0.3</span>))) <span class="co"># In-flight Service</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RC3 
+  2 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(((<span class="fu">abs</span>(A[<span class="dv">20</span>,]) <span class="sc">&gt;</span> <span class="fl">0.3</span>))) <span class="co"># Cleanliness</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RC1 
+  1 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(((<span class="fu">abs</span>(A[<span class="dv">21</span>,]) <span class="sc">&gt;</span> <span class="fl">0.3</span>))) <span class="co"># Departure Delay</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RC4 
+  5 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(((<span class="fu">abs</span>(A[<span class="dv">22</span>,]) <span class="sc">&gt;</span> <span class="fl">0.3</span>))) <span class="co"># Arrival Delay</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RC4 
+  5 </code></pre>
+</div>
+</div>
+<table class="table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><ol type="1">
+<li><p>Factor 1 (Hospitality): Food and Drink, Online Boarding, Seat Comfort, In-flight Entertainment, Cleanliness</p></li>
+<li><p>Factor 2 (Facilities): In-flight WiFi Service, Ease of Online Booking, Online Boarding</p></li>
+<li><p>Factor 3 (Accommodations): In-flight Entertainment, On Board Service, Leg Room Service, Baggage Handling, In-flight Service</p></li>
+<li><p>Factor 4 (Delays): Departure Delay, Arrival Delay</p></li>
+<li><p>Factor 5 (Privilege): Class, Type of Travel, Flight Distance, Departure/Arrival Time Convenience</p></li>
+<li><p>Factor 6 (Ease): Customer Type, Age, Type of Travel, Departure/Arrival Time Convenience,</p></li>
+<li><p>Factor 7: Gender</p></li>
+<li><p>Factor 8 (Convenience): Departure/Arrival Time Convenience, Ease of Online Booking, Gate Location</p></li>
+<li><p>Factor 9: Check-in Service</p></li>
+<li><p>Factor 10: Age</p></li>
+</ol></td>
+</tr>
+</tbody>
+</table>
+<p>I then created a path diagram to illustrate the relationship between dimensions and factors to predict airplane passenger satisfaction.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Path Diagram</span></span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="fu">include_graphics</span>(<span class="st">"400 final.drawio.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="400%20final.drawio.png" class="img-fluid" width="586"></p>
+</div>
+</div>
+<p>Then I created the Structural Equation Model according to the path diagram to calculate the optimized parameter estimates.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>EQN1 <span class="ot">&lt;-</span> <span class="st">'# Measurement Model (Factor Definition)</span></span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="st">          Hospitality =~ Cleanliness + Food.and.drink + Seat.comfort</span></span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a><span class="st">          Accomodations =~ Baggage.handling + Leg.room.service + On.board.service</span></span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a><span class="st">          + Inflight.service</span></span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a><span class="st">          Facilities =~ Inflight.wifi.service + Ease.of.Online.booking</span></span>
+<span id="cb67-6"><a href="#cb67-6" aria-hidden="true" tabindex="-1"></a><span class="st">          Convenience =~ Gate.location + Departure.Arrival.time.convenient</span></span>
+<span id="cb67-7"><a href="#cb67-7" aria-hidden="true" tabindex="-1"></a><span class="st">          Delays =~ Departure.Delay.in.Minutes + Arrival.Delay.in.Minutes</span></span>
+<span id="cb67-8"><a href="#cb67-8" aria-hidden="true" tabindex="-1"></a><span class="st">          Privilege =~ Flight.Distance + Class + Type.of.Travel + Customer.Type</span></span>
+<span id="cb67-9"><a href="#cb67-9" aria-hidden="true" tabindex="-1"></a><span class="st">          </span></span>
+<span id="cb67-10"><a href="#cb67-10" aria-hidden="true" tabindex="-1"></a><span class="st">          # Measurement Model (Covariance Specification)</span></span>
+<span id="cb67-11"><a href="#cb67-11" aria-hidden="true" tabindex="-1"></a><span class="st">          Convenience ~~ Online.boarding</span></span>
+<span id="cb67-12"><a href="#cb67-12" aria-hidden="true" tabindex="-1"></a><span class="st">          Hospitality ~~ Inflight.entertainment</span></span>
+<span id="cb67-13"><a href="#cb67-13" aria-hidden="true" tabindex="-1"></a><span class="st">          Accomodations ~~ Inflight.entertainment</span></span>
+<span id="cb67-14"><a href="#cb67-14" aria-hidden="true" tabindex="-1"></a><span class="st">          Facilities ~~ Online.boarding</span></span>
+<span id="cb67-15"><a href="#cb67-15" aria-hidden="true" tabindex="-1"></a><span class="st">          </span></span>
+<span id="cb67-16"><a href="#cb67-16" aria-hidden="true" tabindex="-1"></a><span class="st">          # Structural Model</span></span>
+<span id="cb67-17"><a href="#cb67-17" aria-hidden="true" tabindex="-1"></a><span class="st">          satisfaction ~ Hospitality + Accomodations + Facilities + Convenience</span></span>
+<span id="cb67-18"><a href="#cb67-18" aria-hidden="true" tabindex="-1"></a><span class="st">          + Delays + Privilege + Age + Gender + Checkin.service</span></span>
+<span id="cb67-19"><a href="#cb67-19" aria-hidden="true" tabindex="-1"></a><span class="st">'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Structural Equation Model</span></span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>MOD1 <span class="ot">&lt;-</span> <span class="fu">sem</span>(<span class="at">model =</span> EQN1, <span class="at">sample.cov =</span> R, <span class="at">sample.nobs =</span> <span class="dv">103904</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in lav_object_post_check(object): lavaan WARNING: some estimated ov
+variances are negative</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>MOD1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>lavaan 0.6.16 ended normally after 66 iterations
+
+  Estimator                                         ML
+  Optimization method                           NLMINB
+  Number of model parameters                        65
+
+  Number of observations                        103904
+
+Model Test User Model:
+                                                        
+  Test statistic                              177316.078
+  Degrees of freedom                                 205
+  P-value (Chi-square)                             0.000</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameter Estimates</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a><span class="fu">parameterEstimates</span>(MOD1) [<span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             lhs op                               rhs    est    se       z
+1    Hospitality =~                       Cleanliness  1.000 0.000      NA
+2    Hospitality =~                    Food.and.drink  0.892 0.003 283.225
+3    Hospitality =~                      Seat.comfort  0.900 0.003 287.117
+4  Accomodations =~                  Baggage.handling  1.000 0.000      NA
+5  Accomodations =~                  Leg.room.service  0.660 0.005 145.584
+6  Accomodations =~                  On.board.service  0.941 0.005 207.137
+7  Accomodations =~                  Inflight.service  1.051 0.005 226.526
+8     Facilities =~             Inflight.wifi.service  1.000 0.000      NA
+9     Facilities =~            Ease.of.Online.booking  1.056 0.004 293.192
+10   Convenience =~                     Gate.location  1.000 0.000      NA
+11   Convenience =~ Departure.Arrival.time.convenient  0.978 0.007 150.349
+12        Delays =~        Departure.Delay.in.Minutes  1.000 0.000      NA
+13        Delays =~          Arrival.Delay.in.Minutes  1.118 0.018  63.742
+14     Privilege =~                   Flight.Distance  1.000 0.000      NA
+15     Privilege =~                             Class  1.738 0.012 139.865
+16     Privilege =~                    Type.of.Travel  1.205 0.009 137.778
+17     Privilege =~                     Customer.Type  0.119 0.007  17.907
+18   Convenience ~~                   Online.boarding  0.049 0.003  18.712
+19   Hospitality ~~            Inflight.entertainment  0.683 0.004 184.949
+20 Accomodations ~~            Inflight.entertainment  0.382 0.003 127.690
+21    Facilities ~~                   Online.boarding  0.472 0.003 141.890
+22  satisfaction  ~                       Hospitality  0.220 0.003  72.051
+23  satisfaction  ~                     Accomodations  0.238 0.004  61.359
+24  satisfaction  ~                        Facilities  0.625 0.006 110.413
+25  satisfaction  ~                       Convenience -0.638 0.008 -77.948
+26  satisfaction  ~                            Delays -0.030 0.003 -11.445
+27  satisfaction  ~                         Privilege  0.758 0.007 107.915
+28  satisfaction  ~                               Age  0.026 0.002  11.673
+29  satisfaction  ~                            Gender -0.011 0.002  -4.741
+30  satisfaction  ~                   Checkin.service  0.089 0.002  39.654
+   pvalue ci.lower ci.upper
+1      NA    1.000    1.000
+2       0    0.886    0.898
+3       0    0.894    0.906
+4      NA    1.000    1.000
+5       0    0.651    0.669
+6       0    0.932    0.950
+7       0    1.042    1.060
+8      NA    1.000    1.000
+9       0    1.049    1.063
+10     NA    1.000    1.000
+11      0    0.965    0.991
+12     NA    1.000    1.000
+13      0    1.083    1.152
+14     NA    1.000    1.000
+15      0    1.714    1.763
+16      0    1.188    1.222
+17      0    0.106    0.132
+18      0    0.044    0.054
+19      0    0.675    0.690
+20      0    0.376    0.387
+21      0    0.466    0.479
+22      0    0.214    0.226
+23      0    0.230    0.245
+24      0    0.613    0.636
+25      0   -0.655   -0.622
+26      0   -0.035   -0.025
+27      0    0.744    0.772
+28      0    0.022    0.031
+29      0   -0.015   -0.006
+30      0    0.085    0.094</code></pre>
+</div>
+</div>
+<p>Food and Drink had a 0.892, Seat comfort had a 0.9 loading onto Hospitality, and Inflight entertainment had a 0.683. Legroom service has a positive 0.6 loading onto Accommodations and Inflight entertainment with 0.382, while On board service had a loading of 0.94 and Inflight service has 1.051 onto it. Ease of online booking loads onto Facilities with 1.056 and Online boarding with 0.472, and Departure/Arrival time convenience loads onto convenience with 0.978 and Online Boarding with 0.049. Arrival Delay in Minutes loads onto Delays with 1.118. Privilege has loadings from Class with 1.738, Type of travel with 1.205, and Customer type of 0.119.</p>
+<p>One variable for each factor was fixed, which was Cleanliness for Hospitality, Baggage Handling for Accommodations, Inflight wifi service for Facilities, Gate Location for Convenience, Departure Delay for Delays, and Flight Distance for privilege.</p>
+<p>The strongest loading on Hospitality is Seat comfort, the strongest on Accomodations is Inflight service, on facilities is online boarding, convenience with Departure/Arrival time, and Privilege with Class.</p>
+<p>The loadings onto satisfaction are as follows: Hospitality with 0.220, Accommodations with 0.238, Facilities with 0.625, convenience with -0.638, Delays with -0.030, Privilege with 0.758, Age with 0.026, Gender with -0.011, and Check in service with 0.089. The strongest loading on satisfaction is Privilege, and the weakest is Gender.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Comparative Fit Indices</span></span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>indices1 <span class="ot">&lt;-</span> <span class="fu">fitMeasures</span>(MOD1)</span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>indices1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 npar                  fmin                 chisq 
+               65.000                 0.853            177316.078 
+                   df                pvalue        baseline.chisq 
+              205.000                 0.000           1129433.682 
+          baseline.df       baseline.pvalue                   cfi 
+              250.000                 0.000                 0.843 
+                  tli                  nnfi                   rfi 
+                0.809                 0.809                 0.809 
+                  nfi                  pnfi                   ifi 
+                0.843                 0.691                 0.843 
+                  rni                  logl     unrestricted.logl 
+                0.843          -2472598.985          -2383940.946 
+                  aic                   bic                ntotal 
+          4945327.970           4945948.800            103904.000 
+                 bic2                 rmsea        rmsea.ci.lower 
+          4945742.228                 0.091                 0.091 
+       rmsea.ci.upper        rmsea.ci.level          rmsea.pvalue 
+                0.092                 0.900                 0.000 
+       rmsea.close.h0 rmsea.notclose.pvalue     rmsea.notclose.h0 
+                0.050                 1.000                 0.080 
+                  rmr            rmr_nomean                  srmr 
+                0.099                 0.099                 0.099 
+         srmr_bentler   srmr_bentler_nomean                  crmr 
+                0.099                 0.099                 0.102 
+          crmr_nomean            srmr_mplus     srmr_mplus_nomean 
+                0.102                 0.098                 0.098 
+                cn_05                 cn_01                   gfi 
+              141.286               150.439                 0.847 
+                 agfi                  pgfi                   mfi 
+                0.795                 0.629                 0.426 
+                 ecvi 
+                1.708 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="co"># NFI = 0.843</span></span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a><span class="co"># RMSEA = 0.091</span></span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a><span class="co"># GFI = 0.847</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>From Comparative Fit Indices, the Normed Fit Index (NFI) evaluates the fit of a model by comparing its chi-square statistic to the chi-square statistic of the corresponding independence model and has a standard threshold of values above 0.9 or 0.95, indicating the model is a good fit of the data. Our NFI was 0.843, meaning this model does not adequately fit the data, at least when compared to the baseline model. The following indices I looked at was the Root Mean Square Error of Approximation (RMSEA), which measures the detriment of using the actual model compared to the saturated model. The standard threshold for providing a good fit to the covariance structure of the data matrix is any value below 0.08, and our model had a value of 0.09, which is close but not enough to indicate a well-fitting model. The last indices I looked at was the Goodness-of-Fit Index (GFI), which is typically interpreted as analogous to the coefficient of determination R^2. For our model, the GFI was equal to 0.847, meaning our structural equation model can explain approximately 84.7% of the variance and covariance in the original data.</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
