@@ -1,0 +1,210 @@
+---
+title: "Airplane Passenger Satisfaction"
+format: html
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+# Exploratory Factor Analysis
+
+First I imported the necessary libraries needed for exploratory factor analysis.
+
+```{r message = FALSE, warnings = FALSE}
+library(rmarkdown); library(knitr); library(moments); 
+library(scatterplot3d); library(corrplot); library(pso)
+library(psych); library(GPArotation); library(lavaan);
+library(tidyverse); library(skimr); library(mosaicData); 
+library(broom); library(Stat2Data); library(lmtest)
+```
+
+```{r}
+# Load in the data set
+csv <- read.csv("train.csv")
+head(csv)
+```
+
+Then I loaded in the data set as a csv, and did the necessary data wrangling to complete the analysis- which included mutating the categorical variables into binary (0,1), and removing the identifier variables that weren't usable in the analysis.
+
+```{r}
+# Change categorical variables into binary
+csv <- csv %>%
+mutate(Gender = if_else(Gender == "Female", 1, 0))
+csv <- csv %>%
+mutate(Customer.Type = if_else(Customer.Type == "Loyal Customer", 1, 0))
+csv <- csv %>%
+mutate(Type.of.Travel = if_else(Type.of.Travel == "Business travel", 1, 0))
+csv <- csv %>%
+mutate(Class = if_else(Class == "Business", 1, 0))
+csv <- csv %>%
+mutate(satisfaction = if_else(satisfaction == "satisfied", 1, 0))
+```
+
+```{r}
+# Remove unecessary dimensions
+csv <- csv %>%
+select(-X)
+csv <- csv %>%
+select(-id)
+head(csv)
+```
+
+Then I had to make a reordering of the columns in our dataset so they would line up with the structural equation model so they would be in the same order.
+
+```{r}
+  col_order1 <- c("Cleanliness","Food.and.drink","Seat.comfort", "Baggage.handling",
+                  "Leg.room.service", "On.board.service", "Inflight.service", 
+                  "Inflight.wifi.service", "Ease.of.Online.booking",
+                  "Gate.location", "Departure.Arrival.time.convenient",
+                  "Departure.Delay.in.Minutes", "Arrival.Delay.in.Minutes",
+                  "Flight.Distance", "Class", "Type.of.Travel","Customer.Type",
+                  "satisfaction", "Age" ,"Gender", "Checkin.service",
+                  "Online.boarding", "Inflight.entertainment")
+```
+
+Next I computed the correlation and covariance matrices to utilize in the factor rotation and structural equation model.
+
+```{r}
+# Get correlation matrix
+R <- cor(csv, use= "pairwise.complete.obs")
+head(R)
+data <- cov(csv, use="pairwise.complete.obs")
+head(data)
+data <- data[,col_order1]
+```
+
+I then summed the eigen values in the correlation matrix to see how many factors would be needed according to Kaiser and Jolliffe's criterion, and ended up with 10 factors in accordance with Jolliffe's criterion to include values greater than 0.7.
+
+```{r}
+# Check how many factors are needed
+sum(eigen(R)$values > 1) # Kaiser's = 7
+sum(eigen(R)$values > 0.7) # Jolliffe's = 10
+```
+
+I then computed the loading matrix using orthogonal rotation, and did a correlation plot of the results.
+
+```{r}
+# Orthogonal Rotation
+A <- pca(r = R, nfactors = 10, rotate = "varimax")$loadings[]
+A
+corrplot(A)
+```
+
+To check if oblique factor rotation was necessary, I looked at the correlations between factors, and since none of them were above the common threshold of 0.3, it was not necessary and I stuck with orthogonal rotation.
+
+```{r}
+# Checking if oblique factor rotation is necessary
+A1 <- pca(r = R, nfactors = 10, rotate = "oblimin")$Phi
+A1
+```
+
+Next I checked which of the 10 factors each dimension loaded onto to use to create a path diagram, and then named the factors in accordance with their loadings.
+
+```{r}
+# Check which factors each dimension loads onto
+which(((abs(A[1,]) > 0.3))) # Gender
+which(((abs(A[2,]) > 0.3))) # Customer Type
+which(((abs(A[3,]) > 0.3))) # Age
+which(((abs(A[4,]) > 0.3))) # Type of Travel
+which(((abs(A[5,]) > 0.3))) # Class
+which(((abs(A[6,]) > 0.3))) # Flight Distance
+which(((abs(A[7,]) > 0.3))) # In-flight WiFi Service
+which(((abs(A[8,]) > 0.3))) # Departure/Arrival Time Convenience
+which(((abs(A[9,]) > 0.3))) # Ease of Online Booking
+which(((abs(A[10,]) > 0.3))) # Gate Location
+which(((abs(A[11,]) > 0.3))) # Food and Drink
+which(((abs(A[12,]) > 0.3))) # Online Boarding
+which(((abs(A[13,]) > 0.3))) # Seat Comfort
+which(((abs(A[14,]) > 0.3))) # In-flight Entertainment
+which(((abs(A[15,]) > 0.3))) # On Board Service
+which(((abs(A[16,]) > 0.3))) # Leg Room Service
+which(((abs(A[17,]) > 0.3))) # Baggage Handling
+which(((abs(A[18,]) > 0.3))) # Check-in Service
+which(((abs(A[19,]) > 0.3))) # In-flight Service
+which(((abs(A[20,]) > 0.3))) # Cleanliness
+which(((abs(A[21,]) > 0.3))) # Departure Delay
+which(((abs(A[22,]) > 0.3))) # Arrival Delay
+```
+
++---------------------------------------------------------------------------------------------------------------------------------+
+| 1.  Factor 1 (Hospitality): Food and Drink, Online Boarding, Seat Comfort, In-flight Entertainment, Cleanliness                 |
+|                                                                                                                                 |
+| 2.  Factor 2 (Facilities): In-flight WiFi Service, Ease of Online Booking, Online Boarding                                      |
+|                                                                                                                                 |
+| 3.  Factor 3 (Accommodations): In-flight Entertainment, On Board Service, Leg Room Service, Baggage Handling, In-flight Service |
+|                                                                                                                                 |
+| 4.  Factor 4 (Delays): Departure Delay, Arrival Delay                                                                           |
+|                                                                                                                                 |
+| 5.  Factor 5 (Privilege): Class, Type of Travel, Flight Distance, Departure/Arrival Time Convenience                            |
+|                                                                                                                                 |
+| 6.  Factor 6 (Ease): Customer Type, Age, Type of Travel, Departure/Arrival Time Convenience,                                    |
+|                                                                                                                                 |
+| 7.  Factor 7: Gender                                                                                                            |
+|                                                                                                                                 |
+| 8.  Factor 8 (Convenience): Departure/Arrival Time Convenience, Ease of Online Booking, Gate Location                           |
+|                                                                                                                                 |
+| 9.  Factor 9: Check-in Service                                                                                                  |
+|                                                                                                                                 |
+| 10. Factor 10: Age                                                                                                              |
++---------------------------------------------------------------------------------------------------------------------------------+
+
+I then created a path diagram to illustrate the relationship between dimensions and factors to predict airplane passenger satisfaction.
+
+```{r}
+# Path Diagram
+include_graphics("400 final.drawio.png")
+```
+
+Then I created the Structural Equation Model according to the path diagram to calculate the optimized parameter estimates.
+
+```{r}
+EQN1 <- '# Measurement Model (Factor Definition)
+          Hospitality =~ Cleanliness + Food.and.drink + Seat.comfort
+          Accomodations =~ Baggage.handling + Leg.room.service + On.board.service
+          + Inflight.service
+          Facilities =~ Inflight.wifi.service + Ease.of.Online.booking
+          Convenience =~ Gate.location + Departure.Arrival.time.convenient
+          Delays =~ Departure.Delay.in.Minutes + Arrival.Delay.in.Minutes
+          Privilege =~ Flight.Distance + Class + Type.of.Travel + Customer.Type
+          
+          # Measurement Model (Covariance Specification)
+          Convenience ~~ Online.boarding
+          Hospitality ~~ Inflight.entertainment
+          Accomodations ~~ Inflight.entertainment
+          Facilities ~~ Online.boarding
+          
+          # Structural Model
+          satisfaction ~ Hospitality + Accomodations + Facilities + Convenience
+          + Delays + Privilege + Age + Gender + Checkin.service
+'
+```
+
+```{r}
+# Structural Equation Model
+MOD1 <- sem(model = EQN1, sample.cov = R, sample.nobs = 103904)
+MOD1
+```
+
+```{r}
+# Parameter Estimates
+parameterEstimates(MOD1) [1:30,]
+```
+
+Food and Drink had a 0.892, Seat comfort had a 0.9 loading onto Hospitality, and Inflight entertainment had a 0.683. Legroom service has a positive 0.6 loading onto Accommodations and Inflight entertainment with 0.382, while On board service had a loading of 0.94 and Inflight service has 1.051 onto it. Ease of online booking loads onto Facilities with 1.056 and Online boarding with 0.472, and Departure/Arrival time convenience loads onto convenience with 0.978 and Online Boarding with 0.049. Arrival Delay in Minutes loads onto Delays with 1.118. Privilege has loadings from Class with 1.738, Type of travel with 1.205, and Customer type of 0.119.
+
+One variable for each factor was fixed, which was Cleanliness for Hospitality, Baggage Handling for Accommodations, Inflight wifi service for Facilities, Gate Location for Convenience, Departure Delay for Delays, and Flight Distance for privilege.
+
+The strongest loading on Hospitality is Seat comfort, the strongest on Accomodations is Inflight service, on facilities is online boarding, convenience with Departure/Arrival time, and Privilege with Class.
+
+The loadings onto satisfaction are as follows: Hospitality with 0.220, Accommodations with 0.238, Facilities with 0.625, convenience with -0.638, Delays with -0.030, Privilege with 0.758, Age with 0.026, Gender with -0.011, and Check in service with 0.089. The strongest loading on satisfaction is Privilege, and the weakest is Gender.
+
+```{r}
+# Comparative Fit Indices
+indices1 <- fitMeasures(MOD1)
+indices1
+# NFI = 0.843
+# RMSEA = 0.091
+# GFI = 0.847
+```
+
+From Comparative Fit Indices, the Normed Fit Index (NFI) evaluates the fit of a model by comparing its chi-square statistic to the chi-square statistic of the corresponding independence model and has a standard threshold of values above 0.9 or 0.95, indicating the model is a good fit of the data. Our NFI was 0.843, meaning this model does not adequately fit the data, at least when compared to the baseline model. The following indices I looked at was the Root Mean Square Error of Approximation (RMSEA), which measures the detriment of using the actual model compared to the saturated model. The standard threshold for providing a good fit to the covariance structure of the data matrix is any value below 0.08, and our model had a value of 0.09, which is close but not enough to indicate a well-fitting model. The last indices I looked at was the Goodness-of-Fit Index (GFI), which is typically interpreted as analogous to the coefficient of determination R\^2. For our model, the GFI was equal to 0.847, meaning our structural equation model can explain approximately 84.7% of the variance and covariance in the original data.
